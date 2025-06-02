@@ -92,7 +92,7 @@ def mark_equal_2qubits(qc, known_cells, var_qubits, cellA, cellB, target, anc1, 
         qc.cx(qa[1], anc2)
         qc.cx(qb[1], anc2)
 
-def mark_conflict_rc(qc, known_cells, var_qubits, rc_cells, ancilla, ancillas_pool):
+def mark_conflict_rc(qc, known_cells, var_qubits, rc_cells, ancilla, temp_ancillas):
     """
     Mark the ancilla if any two cells in rc_cells are equal.
     """
@@ -102,13 +102,13 @@ def mark_conflict_rc(qc, known_cells, var_qubits, rc_cells, ancilla, ancillas_po
             pairs.append((rc_cells[i], rc_cells[j]))
 
     # Mark each pair of cells if they are equal.
-    temp_anc = ancillas_pool[0]
+    temp_anc = temp_ancillas[0]
 
     for cA, cB in pairs:
         qc.reset(temp_anc)
-        mark_equal_2qubits(qc, known_cells, var_qubits, cA, cB, temp_anc, ancillas_pool[1], ancillas_pool[2])
+        mark_equal_2qubits(qc, known_cells, var_qubits, cA, cB, temp_anc, temp_ancillas[1], temp_ancillas[2])
         qc.cx(temp_anc, ancilla)
-        mark_equal_2qubits(qc, known_cells, var_qubits, cA, cB, temp_anc, ancillas_pool[1], ancillas_pool[2])
+        mark_equal_2qubits(qc, known_cells, var_qubits, cA, cB, temp_anc, temp_ancillas[1], temp_ancillas[2])
 
 def apply_oracle(qc, known_cells, var_qubits, output, rc_ancillas, temp_ancillas, rcs):
     """
